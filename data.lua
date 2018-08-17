@@ -1,41 +1,97 @@
-local pump = table.deepcopy(data.raw["offshore-pump"]["offshore-pump"])
-pump.name = "dpa"
-pump.icon = "__DewPointAggregator__/graphics/icon.png"
-pump.max_health = 200
-pump.minable.result = "dpa"
-pump.collision_box = {{-2.3, -2.3}, {2.3, 2.3}}
-pump.selection_box = {{-2.5, -2.5}, {2.5, 2.5}}
-pump.collision_mask = {"water-tile", "object-layer", "player-layer", "item-layer"}
-pump.adjacent_tile_collision_test = {"ground-tile"}
-local conn = {}
-for i = -1,1,2 do
-	table.insert(conn, {position = {i, 3}, type = "output"})
-	table.insert(conn, {position = {i, -3}, type = "output"})
-	table.insert(conn, {position = {3, i}, type = "output"})
-	table.insert(conn, {position = {-3, i}, type = "output"})
+local function createConnections()
+	local conn = {}
+	for i = -1,1,2 do
+		table.insert(conn, {position = {i, 3}, type = "output"})
+		table.insert(conn, {position = {i, -3}, type = "output"})
+		table.insert(conn, {position = {3, i}, type = "output"})
+		table.insert(conn, {position = {-3, i}, type = "output"})
+	end
+	return conn
 end
-pump.fluid_box.pipe_connections = conn
-pump.pumping_speed = 8
-pump.flags = {"placeable-neutral", "player-creation"}
-pump.placeable_position_visualization = nil
-pump.circuit_wire_connection_points = circuit_connector_definitions["storage-tank"].points
-pump.circuit_connector_sprites = circuit_connector_definitions["storage-tank"].sprites
 
-for i,d in ipairs({"north", "east", "south", "west"}) do
-	pump.picture[d] = 
-	{
-		filename = "__DewPointAggregator__/graphics/sprite-src.png",
-		priority = "extra-high",
-		shift = {0.3, 0.8},
-		width = 256,
-		height = 256,
-		x = (i-1)*256
-	}
+local smooth = 25--4
+
+local function createSprite(shadow)
+     return {
+        filename = "__DewPointAggregator__/graphics/" .. (shadow and "shadow" or "sprite2") .. ".png",
+        width = 207,
+        height = 199,
+        frame_count = shadow and 1 or 8,
+        line_length = shadow and 1 or 4,
+        animation_speed = 2,
+		scale = 0.8,
+        draw_as_shadow = shadow,
+      }
 end
 
 data:extend(
 {
-	pump,
+  {
+    type = "assembling-machine",
+    name = "dpa",
+    icon = "__DewPointAggregator__/graphics/icon2.png",
+    icon_size = 32,
+    flags = {"placeable-neutral", "placeable-player", "player-creation"},
+    minable = {mining_time = 1, result = "dpa"},
+    max_health = 200,
+    crafting_categories = {"dpa"},
+    crafting_speed = 1,
+    ingredient_count = 1,
+    module_specification = nil,
+    allowed_effects = nil,
+    fast_replaceable_group = nil,
+    corpse = "big-remnants",
+    resistances =
+    {
+      {
+        type = "fire",
+        percent = 70
+      }
+    },
+    fluid_boxes =
+    {
+      {
+        production_type = "output",
+        pipe_covers = pipecoverspictures(),
+        base_area = 25,
+        base_level = 1,
+        pipe_connections = createConnections()
+      },
+      off_when_no_fluid_recipe = false
+    },
+    collision_box = {{-2.3, -2.3}, {2.3, 2.3}},
+    selection_box = {{-2.5, -2.5}, {2.5, 2.5}},
+    energy_source =
+    {
+      type = "electric",
+      usage_priority = "secondary-input",
+      emissions = 0.01,
+	  drain = "25kW",
+    },
+    energy_usage = "400kW",
+    working_sound =
+    {
+      sound =
+      {
+        {
+          filename = "__DewPointAggregator__/sound.ogg",
+          volume = 0.8
+        },
+      },
+      idle_sound = { filename = "__base__/sound/idle1.ogg", volume = 0.6 },
+      apparent_volume = 1.5
+    },
+    animation =
+    {
+      layers =
+      {
+		createSprite(false),
+      },
+      {
+		createSprite(true),
+      }
+    }
+  },
 	{
 		type = "recipe",
 		name = "dpa",
@@ -51,9 +107,25 @@ data:extend(
 		result = "dpa"
 	},
 	{
+		type = "recipe-category",
+		name = "dpa"
+	},
+	{
+		type = "recipe",
+		name = "dpa-action",
+		energy_required = 1/smooth,
+		enabled = true,
+		category = "dpa",
+		ingredients =
+		{
+			
+		},
+		results = {{type = "fluid", name = "water", amount = 100/smooth}}
+	},
+	{
 		type = "item",
 		name = "dpa",
-		icon = "__DewPointAggregator__/graphics/icon.png",
+		icon = "__DewPointAggregator__/graphics/icon2.png",
 		icon_size = 32,
 		flags = {"goes-to-quickbar"},
 		subgroup = "extraction-machine",
