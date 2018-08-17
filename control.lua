@@ -1,7 +1,10 @@
+require "biometypes"
+
 local function onEntityAdded(event)
 	local entity = event.created_entity
 	if entity.name == "dpa" then
-		entity.set_recipe("dpa-action")
+		local biome = getBiome(entity)
+		entity.set_recipe("dpa-action-" .. biome)
 		entity.operable = false
 	end
 end

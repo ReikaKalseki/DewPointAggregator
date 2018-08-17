@@ -1,3 +1,5 @@
+require "biometypes"
+
 local function createConnections()
 	local conn = {}
 	for i = -1,1,2 do
@@ -22,6 +24,18 @@ local function createSprite(shadow)
 		scale = 0.8,
         draw_as_shadow = shadow,
       }
+end
+
+local function createRecipe(name, factor)
+	return {
+		type = "recipe",
+		name = "dpa-action-" .. name,
+		energy_required = 1/smooth,
+		enabled = true,
+		category = "dpa",
+		ingredients = {},
+		results = {{type = "fluid", name = "water", amount = math.floor(100/smooth*factor+0.5)}}
+	}
 end
 
 data:extend(
@@ -111,18 +125,6 @@ data:extend(
 		name = "dpa"
 	},
 	{
-		type = "recipe",
-		name = "dpa-action",
-		energy_required = 1/smooth,
-		enabled = true,
-		category = "dpa",
-		ingredients =
-		{
-			
-		},
-		results = {{type = "fluid", name = "water", amount = 100/smooth}}
-	},
-	{
 		type = "item",
 		name = "dpa",
 		icon = "__DewPointAggregator__/graphics/icon2.png",
@@ -162,5 +164,10 @@ data:extend(
 		},
 		upgrade = true,
 		order = "a-f",
-	}
+	},
 })
+
+for type,fac in pairs(biomeTypes) do
+	data:extend({createRecipe(type, fac)})
+	log("Creating DPA function for biome " .. type .. ": " .. fac .. "x yield")
+end
