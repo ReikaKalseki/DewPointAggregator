@@ -46,6 +46,6 @@ function getBiome(entity)
 			max = count
 		end
 	end
-	game.print(ret)
+	--game.print(ret)
 	return ret
 end
