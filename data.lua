@@ -34,7 +34,8 @@ local function createRecipe(name, factor)
 		enabled = true,
 		category = "dpa",
 		ingredients = {},
-		results = {{type = "fluid", name = "water", amount = math.floor(100/smooth*factor+0.5)}}
+		results = {{type = "fluid", name = "water", amount = math.floor(100/smooth*factor+0.5)}},
+		hidden = true,
 	}
 end
 
@@ -79,7 +80,7 @@ data:extend(
     {
       type = "electric",
       usage_priority = "secondary-input",
-      emissions = 0.01,
+      emissions_per_minute = 16,
 	  drain = "25kW",
     },
     energy_usage = "400kW",
@@ -129,7 +130,7 @@ data:extend(
 		name = "dpa",
 		icon = "__DewPointAggregator__/graphics/icon2.png",
 		icon_size = 32,
-		flags = {"goes-to-quickbar"},
+		flags = {},
 		subgroup = "extraction-machine",
 		order = "b[fluids]-a[dpa]",
 		place_result = "dpa",
@@ -157,12 +158,11 @@ data:extend(
 		  count = 40,
 		  ingredients =
 		  {
-			{"science-pack-1", 1},
-			{"science-pack-2", 1},
+			{"automation-science-pack", 1},
+			{"logistic-science-pack", 1},
 		  },
 		  time = 30
 		},
-		upgrade = true,
 		order = "a-f",
 	},
 })
