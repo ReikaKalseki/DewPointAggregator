@@ -1,4 +1,5 @@
 require "biometypes"
+require "config"
 
 local function createConnections()
 	local conn = {}
@@ -34,7 +35,7 @@ local function createRecipe(name, factor)
 		enabled = true,
 		category = "dpa",
 		ingredients = {},
-		results = {{type = "fluid", name = "water", amount = math.floor(100/smooth*factor+0.5)}},
+		results = {{type = "fluid", name = "water", amount = math.floor(800/smooth*factor*Config.powerFactor+0.5)}},
 		hidden = true,
 	}
 end
@@ -81,9 +82,9 @@ data:extend(
       type = "electric",
       usage_priority = "secondary-input",
       emissions_per_minute = 16,
-	  drain = "25kW",
+	  drain = (50*Config.powerFactor) .. "kW",
     },
-    energy_usage = "400kW",
+    energy_usage =  (400*Config.powerFactor) .. "kW",
     working_sound =
     {
       sound =
