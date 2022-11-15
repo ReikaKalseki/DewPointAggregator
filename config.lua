@@ -1,3 +1,3 @@
 Config = {}
 
-Config.powerFactor = settings.startup["dpa-factor"].value--1.4
+Config.powerFactor = settings.startup["dpa-factor"].value--[[@as number]]
